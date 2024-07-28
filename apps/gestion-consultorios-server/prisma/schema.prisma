@@ -1,0 +1,60 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Turno {
+  id         String    @id @default(cuid())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  fechaHora  DateTime?
+  paciente   Paciente? @relation(fields: [pacienteId], references: [id])
+  pacienteId String?
+}
+
+model Paciente {
+  id              String          @id @default(cuid())
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  nombre          String?
+  apellido        String?
+  fechaNacimiento DateTime?
+  dni             String?
+  turnos          Turno[]
+  estudioMedicos  EstudioMedico[]
+}
+
+model EstudioMedico {
+  id         String    @id @default(cuid())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  tipo       String?
+  fecha      DateTime?
+  resultado  String?
+  paciente   Paciente? @relation(fields: [pacienteId], references: [id])
+  pacienteId String?
+}
+
+model Agenda {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  fecha       DateTime?
+  consultorio String?
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  firstName String?
+  lastName  String?
+  username  String   @unique
+  email     String?  @unique
+  password  String
+  roles     Json
+}
